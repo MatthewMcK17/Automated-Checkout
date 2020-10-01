@@ -6,4 +6,4 @@ Description: Mimics an Automated Point of Sale System in which the customer "sca
 
 Implements: OOP, Luhn's Algorithm, File I/O
 
-Future Plans: Implement a GUI to increase UX and improve UI, and web scraper to get images and show the item that the customer is buying.
+Future Plans: Implement a GUI to increase UX and improve UI, a web scraper to get images and show the item that the customer is buying, a proper database (SQL)
