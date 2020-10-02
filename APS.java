@@ -60,7 +60,7 @@ public class APS {
 		System.out.println("---------------------------------------");
 
 		double totalItems = 0;
-		for (Item a : cart) {
+	    for (Item a : cart) {
 			System.out.print(a);
 			totalItems += a.getQuantity();
 		}
@@ -100,16 +100,32 @@ public class APS {
 		do {
 			System.out.print("Please enter item barcode (1 - 110436): ");
 			int barcode = in.nextInt();
+			
+			while (barcode > 110436) {
+				System.out.print("Invalid entry. Please enter item barcode (1 - 110436): ");
+				barcode = in.nextInt();
+			}
 
 			System.out.print("Please enter item quantity (i.e # of pounds or # of items): ");
 			double quantity = in.nextDouble();
+			
+			while (quantity <= 0 ) {
+				System.out.print("Invalid quantity. Please enter item quantity (i.e # of pounds or # of items): ");
+				quantity = in.nextDouble();
+			}
 
 			System.out.print("Does this item have a discount (y or n)? ");
 			String discountAns = in.next().toLowerCase();
 
-			if (discountAns.equals("y")) {
+			if (discountAns.equals("y") || discountAns.equals("yes")) {
 				System.out.print("Enter percent off: ");
 				double discount = in.nextDouble();
+				
+				while (discount < 0 || discount > 100) {
+					System.out.println("Error: Invalid percentage. Please try again.");
+					System.out.print("Enter percent off: ");
+					discount = in.nextDouble();
+				}
 
 				cart.add(new Item(data.getItemName(barcode), barcode, quantity, data.getItemPrice(barcode), discount));
 			} else {
@@ -117,18 +133,31 @@ public class APS {
 			}
 
 			System.out.print("Would you like to enter another item (y or n)? ");
-			ans = in.next();
+			ans = in.next().toLowerCase();
+			
+			if (!(ans.equals("y") || ans.equals("n") || ans.equals("yes") || ans.equals("no"))) {
+				System.out.println("Invalid option, please try again.");
+				System.out.print("Would you liketo enter another item (y or n)? ");
+				ans = in.next().toLowerCase();
+			}
 
 			System.out.println();
-		} while (!(ans.equals("n")));
+		} while (!(ans.equals("n") || ans.equals("no")));
 
 		System.out.print("Do you have any coupons that applies to the total price (y or n)? ");
 		ans = in.next().toLowerCase();
 
 		double percent;
-		if (ans.equals("y")) {
+		if (ans.equals("y") || ans.equals("yes")) {
 			System.out.print("Enter percent off: ");
-			percent = in.nextDouble() / 100.0;
+			percent = in.nextDouble(); 
+					
+			while (percent < 0 || percent > 100) {
+				System.out.println("Error: Invalid percentage. Please try again.");
+				System.out.print("Enter percent off: ");
+				percent = in.nextDouble();
+			}
+			percent /= 100.0;
 		} else {
 			percent = 0;
 		}
