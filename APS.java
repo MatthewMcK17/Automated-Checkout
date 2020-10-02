@@ -60,7 +60,7 @@ public class APS {
 		System.out.println("---------------------------------------");
 
 		double totalItems = 0;
-	    for (Item a : cart) {
+	    	for (Item a : cart) {
 			System.out.print(a);
 			totalItems += a.getQuantity();
 		}
