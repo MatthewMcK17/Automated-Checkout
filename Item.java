@@ -42,7 +42,7 @@ public class Item {
 	}
 
 	/**
-	 * Overriden toString method
+	 * Overridden toString method
 	 */
 	public String toString() {
 		return String.format("%-10s %-15s  $%1.2f\n", this.barcode, this.name, this.totalPrice);
