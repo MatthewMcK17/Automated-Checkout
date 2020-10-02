@@ -64,7 +64,7 @@ public class CardVerification {
 	}
 
 	/**
-	 * Calculates the total sum of the odd places in hte credit card
+	 * Calculates the total sum of the odd places in the credit card
 	 * 
 	 * @return int sum
 	 */
@@ -78,7 +78,7 @@ public class CardVerification {
 	}
 
 	/**
-	 * Verifies if card prefix matches the preset values in the constant vairables
+	 * Verifies if card prefix matches the preset values in the constant variables
 	 * 
 	 * @return
 	 */
