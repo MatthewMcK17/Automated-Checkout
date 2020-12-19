@@ -18,10 +18,10 @@ public class Database {
 	 */
 	private void createDatabase() {
 		BufferedReader inFile = null;
+		String line;
 		try {
 			inFile = new BufferedReader(new FileReader("Grocery_UPC_Database.csv"));
 			
-			String line;
 			while ((line = inFile.readLine()) != null) {
 				data.add(line.split(","));
 			}
