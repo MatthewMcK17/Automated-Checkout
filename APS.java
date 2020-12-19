@@ -53,21 +53,21 @@ public class APS {
 	 * @param card CardVerification object
 	 */
 	private void printReceipt(CardVerification card, double percent) {
+		double totalItems = 0, cost = discountedCost() * (1 - percent);
+		Date date = new Date();
+		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+		
 		System.out.println("\tReceipt ID: " + this.apsId);
 		System.out.println("\tCashier: " + this.customerName + "\n");
 
 		System.out.printf("%-11s%-17s%n", "Barcode", "Item Name & Price");
 		System.out.println("---------------------------------------");
 
-		double totalItems = 0;
 	    	for (Item a : cart) {
 			System.out.print(a);
 			totalItems += a.getQuantity();
 		}
 		System.out.println("---------------------------------------");
-
-		double cost = discountedCost() * (1 - percent);
-
 		System.out.println(String.format("%25s%9.2f", "Subtotal", cost));
 		System.out.println(String.format("%25s%9.2f", "Tax 6.000%", cost * (this.tax - 1)));
 		System.out.println(String.format("%25s%9.2f", "Total", cost * this.tax));
@@ -77,9 +77,6 @@ public class APS {
 		System.out.println();
 		System.out.println("\t" + card.getCardType() + ": " + card.getCardNumber());
 		System.out.println();
-
-		Date date = new Date();
-		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 
 		System.out.println("\t" + format.format(date));
 		
@@ -93,13 +90,14 @@ public class APS {
 	 * @param in Scanner object
 	 */
 	public void createCart(Scanner in) {
-		String ans;
-
+		String ans, discountAns;
 		Database data = new Database();
+		int barcode;
+		double quantity, discount = 0, percent = 0;
 
 		do {
 			System.out.print("Please enter item barcode (1 - 110436): ");
-			int barcode = in.nextInt();
+			barcode = in.nextInt();
 			
 			while (barcode > 110436) {
 				System.out.print("Invalid entry. Please enter item barcode (1 - 110436): ");
@@ -107,7 +105,7 @@ public class APS {
 			}
 
 			System.out.print("Please enter item quantity (i.e # of pounds or # of items): ");
-			double quantity = in.nextDouble();
+			quantity = in.nextDouble();
 			
 			while (quantity <= 0 ) {
 				System.out.print("Invalid quantity. Please enter item quantity (i.e # of pounds or # of items): ");
@@ -115,22 +113,19 @@ public class APS {
 			}
 
 			System.out.print("Does this item have a discount (y or n)? ");
-			String discountAns = in.next().toLowerCase();
+			discountAns = in.next().toLowerCase();
 
 			if (discountAns.equals("y") || discountAns.equals("yes")) {
 				System.out.print("Enter percent off: ");
-				double discount = in.nextDouble();
+				discount = in.nextDouble();
 				
 				while (discount < 0 || discount > 100) {
 					System.out.println("Error: Invalid percentage. Please try again.");
 					System.out.print("Enter percent off: ");
 					discount = in.nextDouble();
 				}
-
-				cart.add(new Item(data.getItemName(barcode), barcode, quantity, data.getItemPrice(barcode), discount));
-			} else {
-				cart.add(new Item(data.getItemName(barcode), barcode, quantity, data.getItemPrice(barcode), 0));
 			}
+			cart.add(new Item(data.getItemName(barcode), barcode, quantity, data.getItemPrice(barcode), discount));
 
 			System.out.print("Would you like to enter another item (y or n)? ");
 			ans = in.next().toLowerCase();
@@ -147,7 +142,6 @@ public class APS {
 		System.out.print("Do you have any coupons that applies to the total price (y or n)? ");
 		ans = in.next().toLowerCase();
 
-		double percent;
 		if (ans.equals("y") || ans.equals("yes")) {
 			System.out.print("Enter percent off: ");
 			percent = in.nextDouble(); 
@@ -157,32 +151,34 @@ public class APS {
 				System.out.print("Enter percent off: ");
 				percent = in.nextDouble();
 			}
-			percent /= 100.0;
-		} else {
-			percent = 0;
 		}
 
 		System.out.println();
 
-		checkOut(in, percent);
+		checkOut(in, percent / 100.0);
 	}
 
 	/*
 	 * The method that completes the checkout if credit card is valid
 	 */
 	private void checkOut(Scanner in, double percent) {
+		int cardType;
+		String ccNumber;
+		CardVerification creditCard;
+		
 		printCardTypes();
 		System.out.print("Please enter which card you will be using: ");
-		int cardType = in.nextInt();
+		cardType = in.nextInt();
+		
 		if (cardType < 1 || cardType > 5) {
 			System.out.println("Invalid Choice... quitting program");
 			System.exit(1);
 		}
 
 		System.out.print("Please enter credit card #: ");
-		String ccNumber = in.next();
+		ccNumber = in.next();
 
-		CardVerification creditCard = new CardVerification(this.apsId, ccNumber, (cardType - 1), discountedCost());
+		creditCard = new CardVerification(this.apsId, ccNumber, (cardType - 1), discountedCost());
 
 		if (creditCard.getValidity()) {
 			System.out.println("Successful Transaction!");
