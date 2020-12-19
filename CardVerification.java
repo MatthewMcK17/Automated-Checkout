@@ -83,15 +83,17 @@ public class CardVerification {
 	 * @return
 	 */
 	private boolean verifyCardPrefix() {
+		int prefixLength;
+		
 		if (this.cardType == 4) {
 			for (String prefix : CARD_PREFIXES) {
-				int prefixLength = prefix.length();
+				prefixLength = prefix.length();
 				if (cardNumber.substring(0, prefixLength).equals(prefix)) {
 					return true;
 				}
 			}
 		} else {
-			int prefixLength = CARD_PREFIXES[this.cardType].length();
+			prefixLength = CARD_PREFIXES[this.cardType].length();
 			if (cardNumber.substring(0, prefixLength).equals(CARD_PREFIXES[this.cardType])) {
 				return true;
 			}
